@@ -1,25 +1,48 @@
-# Computer-Networks
+# Multi-User File Transfer System
 
-# Server Side
+This project implements a multi-user file transfer system consisting of server-side and client-side components. The system allows multiple users to securely exchange files over a network connection.
 
-In the `server.py` file, the `__init__` function of the `Server` class initializes the server and starts its operation. Upon initialization, two files are defined: one for registered users' information and another for logging user activities (`userlog.txt`). Registered users are read from the file, and a list is created containing information for each user, including their block status, username, password, and the number of password attempts.
+## Server Side
 
-In the main section, the `start()` function is executed immediately after creating the `Server` object, initiating the server to listen for incoming requests indefinitely. When a user sends a request, a new thread is created for that user's session, allowing the server to handle multiple sessions concurrently.
+### Overview
+The server side is implemented in the `server.py` file. It utilizes the `Server` class, which initializes the server and handles incoming client requests.
 
-During a session, the user is prompted to log in, and the `auth` function handles the login process. It receives the username and password from the user and provides feedback based on the accuracy of these values. If the password is entered incorrectly multiple times, the user is temporarily blocked by the system for 10 seconds. If authentication is successful, the thread is redirected to the `handle_client` function.
+### Functionality
+- **Authentication**: Users are required to log in with a username and password.
+- **Blocking Mechanism**: If a user enters the incorrect password multiple times, they are temporarily blocked by the system for security purposes.
+- **Concurrent Sessions**: The server supports multiple simultaneous sessions, each handled by a separate thread.
+- **Request Handling**: Incoming requests from clients are processed and routed to the appropriate functions for execution.
 
-The `handle_client` function listens for incoming requests from the client and responds accordingly until receiving the "OUT" request. While the user is active, incoming requests are processed by the `preprocess()` function, which acts as a router, forwarding requests to the appropriate functions and ensuring correct input handling to prevent errors.
+## Client Side
 
-Functions such as `BCM`, `ATU`, `SRB`, and `SRM` perform tasks based on the instructions received from the `preprocess` function.
+### Overview
+The client side is implemented in the `client.py` file. It contains the `Main` class, responsible for establishing connections to the server and facilitating file transfers.
 
-# Client Side
+### Functionality
+- **Authentication**: Users authenticate with the server by providing their username and password.
+- **Session Management**: Upon successful authentication, users can initiate and manage sessions for file transfer.
+- **File Transfer**: Users can send files to other users using the "UPD" command, which initiates a file transfer protocol with the server.
+- **Real-time Updates**: The client periodically checks for incoming files and updates, ensuring prompt delivery of messages and files.
 
-The `client.py` file contains the `Main` class responsible for establishing the client-side connection to the server. Information regarding the server connection is retrieved via command-line arguments, and the `auth()` function is executed upon session initiation.
+## Getting Started
 
-The `auth()` function communicates with the server, sending the username and password information. If the information is correct, the server responds positively, and the `auth` function terminates, calling the `loop()` function.
+1. **Server Setup**: Run the `server.py` file to start the server.
+   ```bash
+   python server.py
+   ```
 
-The `loop()` function handles user input, forwarding it to the server. Different control codes are triggered when the input is "UPD" or "OUT". The "OUT" command exits the session, while the "UPD" command initiates a protocol to send a file to the target user.
+2. **Client Setup**: Run the `client.py` file to start a client session.
+   ```bash
+   python client.py
+   ```
 
-When the "UPD" command is executed, the `send_file()` function is activated to send the file in pieces.
+3. **Authentication**: Upon launching the client, users will be prompted to authenticate with their username and password.
 
-Additionally, the `check_file()` function runs in the background thread, periodically checking for incoming files. Upon receiving a file, it imports the file in chunks and saves it locally.
+4. **File Transfer**: Users can initiate file transfers using the "UPD" command followed by the filename.
+
+
+## Usage
+
+- Ensure that both the server and client scripts are executed within the same network environment.
+- Follow the prompts on the client side to authenticate and initiate file transfers.
+
